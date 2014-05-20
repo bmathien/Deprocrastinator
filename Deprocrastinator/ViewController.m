@@ -8,22 +8,119 @@
 
 #import "ViewController.h"
 
-@interface ViewController ()
+@interface ViewController () <UITableViewDataSource, UITableViewDelegate>
+
+@property (strong, nonatomic) IBOutlet UITextField *textField;
+@property (strong, nonatomic) IBOutlet UITableView *myTableView;
+@property NSMutableArray *tasksArray; //make manually
+@property BOOL x;
+@property (strong, nonatomic) IBOutlet UIButton *add;
 
 @end
 
 @implementation ViewController
 
+
+
+
+- (IBAction)onEditButtonPressed:(UIButton *)sender
+{
+    self.editing = ! self.editing;
+
+    if(self.editing)
+    {
+        [sender setTitle:@"Done" forState:UIControlStateNormal];
+    }
+
+    else
+    {
+        [sender setTitle:@"Edit" forState:UIControlStateNormal];
+    }
+}
+
+
+
+
+- (IBAction)onAddButtonPressed:(id)sender
+{
+    NSString *nospaces = [self.textField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+
+    if ([nospaces  isEqual: @""])
+    {
+        nil;
+    }
+
+    else
+    {
+    [self.tasksArray addObject:self.textField.text];
+    [self.myTableView reloadData];
+    [self.textField resignFirstResponder];
+    self.textField.text = [NSString stringWithFormat: @""];
+    }
+}
+
+
+
+
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell"];
+    cell.textLabel.text = [self.tasksArray objectAtIndex:indexPath.row];
+
+    return cell;
+}
+
+
+
+
+-(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return self.tasksArray.count;
+}
+
+
+
+
+
+
+- (void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    UITableViewCell *selectedCell = [tableView cellForRowAtIndexPath:indexPath];
+
+    if ([selectedCell.textLabel.textColor isEqual: [UIColor greenColor]])
+    {
+     selectedCell.textLabel.textColor = [UIColor blackColor];
+    }
+
+    else
+    {
+    selectedCell.textLabel.textColor = [UIColor greenColor];
+
+    }
+
+    if (self.editing)
+    {
+        [self.tasksArray removeObjectAtIndex:indexPath.row];
+        [self.myTableView reloadData];
+    }
+}
+
+
+
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
+    self.tasksArray = [NSMutableArray arrayWithObjects:@"Haircut", @"Drink Water", @"Play Basketball", @"Code", nil];
 }
+
+
+
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 @end
