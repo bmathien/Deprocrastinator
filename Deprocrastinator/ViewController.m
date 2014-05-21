@@ -12,7 +12,6 @@
 
 @property (strong, nonatomic) IBOutlet UITextField *textField;
 @property (strong, nonatomic) IBOutlet UITableView *myTableView;
-@property NSMutableArray *tasksArray; //make manually
 @property BOOL x;
 @property (strong, nonatomic) IBOutlet UIButton *add;
 
@@ -52,10 +51,19 @@
 
     else
     {
-    [self.tasksArray addObject:self.textField.text];
-    [self.myTableView reloadData];
-    [self.textField resignFirstResponder];
-    self.textField.text = [NSString stringWithFormat: @""];
+        MagicalCreature *newCreature = [[MagicalCreature alloc]init];
+        newCreature.name = self.textField.text;
+        [self.creatures addObjet:newCreature];
+        [self.myTableView reloadData];
+
+        [self.textField resignFirstResponder];
+        self.textField.text = nil;
+        [self.myTableView reloadData];
+
+//        [self.tasksArray addObject:self.textField.text];
+//    [self.myTableView reloadData];
+//    [self.textField resignFirstResponder];
+//    self.textField.text = [NSString stringWithFormat: @""];
     }
 }
 
